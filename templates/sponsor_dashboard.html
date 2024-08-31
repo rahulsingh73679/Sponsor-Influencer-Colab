@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 2px -2px gray;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        nav {
+            background-color: #495057;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: #ffffff;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            padding: 20px;
+        }
+        h2 {
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .campaign-card, .ad-request-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            flex: 1 1 calc(100% - 20px); /* Full width on small screens */
+            max-width: calc(100% - 20px); /* Full width on small screens */
+            transition: transform 0.3s ease;
+        }
+        .campaign-card:hover, .ad-request-card:hover {
+            transform: translateY(-5px);
+        }
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn-outline-primary {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        .btn-outline-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-outline-danger {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        .btn-outline-danger:hover {
+            background-color: #c82333;
+        }
+        .take-action-btn {
+            background-color: #28a745;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-align: center;
+            display: inline-block;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .take-action-btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+        .alert {
+            background-color: #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        footer {
+            background-color: #343a40;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px;
+            box-shadow: 0 -2px 5px gray;
+            margin-top: auto;
+        }
+        footer p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        @media (min-width: 768px) {
+            .campaign-card, .ad-request-card {
+                flex: 1 1 calc(50% - 20px); /* Two cards per row on medium screens */
+                max-width: calc(50% - 20px); /* Two cards per row on medium screens */
+            }
+        }
+
+        @media (min-width: 992px) {
+            .campaign-card, .ad-request-card {
+                flex: 1 1 calc(33% - 20px); /* Three cards per row on large screens */
+                max-width: calc(33% - 20px); /* Three cards per row on large screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Your Sponsor Dashboard, {{ session['email'] }}</h1>
+    </header>
+    <nav>
+        <a href="/campaign/create">Create Campaign</a>
+        <a href="{{ url_for('search_campaigns') }}">Search Campaigns</a>
+        <a href="/search/influencers">Search Influencers</a>
+        <a href="/ad_request/create">Create Ad Request</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <div class="container">
+        <h2>Your Campaigns</h2>
+        {% if campaigns %}
+            <div class="card-container">
+                {% for campaign in campaigns %}
+                    <div class="campaign-card">
+                        <h5 class="card-title">{{ campaign.name }}</h5>
+                        <p>Status: {{ campaign.status }}</p>
+                        <div class="btn-group">
+                            <a href="/campaign/update/{{ campaign.id }}" class="btn btn-outline-primary">Update</a>
+                            <a href="/campaign/delete/{{ campaign.id }}" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete this campaign?');">Delete</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert">
+                You haven't created any campaigns yet.
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="container">
+        <h2>Your Ad Requests</h2>
+        {% if ad_requests %}
+            <div class="card-container">
+                {% for ad_request in ad_requests %}
+                    <div class="ad-request-card">
+                        <h5 class="card-title">Campaign: {{ ad_request.campaign.name }}</h5>
+                        <p><strong>Influencer:</strong> {{ ad_request.influencer.name }}</p>
+                        <p><strong>Status:</strong> {{ ad_request.status }}</p>
+                        <p><strong>Message:</strong> {{ ad_request.messages }}</p>
+                        <a href="{{ url_for('ad_request_action', ad_request_id=ad_request.id) }}" class="take-action-btn">Take Action</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert">
+                You haven't received any ad requests yet.
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

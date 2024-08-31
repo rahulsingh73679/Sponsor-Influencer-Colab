@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            justify-content: center;
+            align-items: center;
+        }
+        header {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 4px 2px -2px gray;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 100%;
+            margin: 0 10px;
+        }
+        h2 {
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        label {
+            font-weight: 500;
+            color: #555;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #333;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #343a40;
+            color: #ffffff;
+            width: 100%;
+            box-shadow: 0 -2px 5px gray;
+            margin-top: 30px;
+        }
+        footer p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        /* Media Queries for Mobile */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px;
+            }
+            header h1 {
+                font-size: 1.25rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            h2 {
+                margin-bottom: 1rem;
+            }
+            label, input, select, button {
+                font-size: 0.875rem;
+            }
+            button {
+                padding: 0.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1rem;
+            }
+            .container {
+                padding: 0.75rem;
+            }
+            h2 {
+                margin-bottom: 0.75rem;
+            }
+            label, input, select, button {
+                font-size: 0.75rem;
+            }
+            button {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Create Your Account</h1>
+    </header>
+    <div class="container">
+        <h2>Register</h2>
+        <form method="POST" action="/register">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your name">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required placeholder="Enter your password">
+
+            <label for="role">Role:</label>
+            <select id="role" name="role" required>
+                <option value="">Select a role</option>
+                <option value="admin">Admin</option>
+                <option value="sponsor">Sponsor</option>
+                <option value="influencer">Influencer</option>
+            </select>
+
+            <button type="submit">Register</button>
+            <div class="login-link">
+                <p>Already have an account?</p>
+                <a href="/login">Login here</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

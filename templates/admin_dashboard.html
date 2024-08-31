@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 2px -2px gray;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        nav {
+            background-color: #495057;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: #ffffff;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+            width: 100%;
+        }
+        section {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        h2 {
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+        th {
+            background-color: #f7f9fc;
+            color: #007bff;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .flagged {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        form {
+            display: inline;
+        }
+        .alert {
+            background-color: #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.2rem;
+            }
+            nav a {
+                margin: 0 5px;
+                font-size: 0.9rem;
+            }
+            main {
+                padding: 15px;
+            }
+            section {
+                padding: 15px;
+            }
+            h2 {
+                font-size: 1rem;
+            }
+            th, td {
+                font-size: 0.8rem;
+                padding: 6px;
+            }
+            .actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+            button {
+                padding: 5px 8px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Administrator Panel</h1>
+        <nav>
+            <a href="{{ url_for('logout') }}">Log Out</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Dashboard Overview</h2>
+            <p>Total Admins: {{ admin_count }}</p>
+            <p>Total Sponsors: {{ sponsor_count }}</p>
+            <p>Total Influencers: {{ influencer_count }}</p>
+            <p>Total Campaigns Launched: {{ campaign_count }}</p>
+            <p>Total Advertisement Requests: {{ ad_request_count }}</p>
+        </section>
+
+        <section>
+            <h2>Manage Users</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Flagged</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="{{ 'flagged' if user.is_flagged }}">
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ 'Yes' if user.is_flagged else 'No' }}</td>
+                        <td class="actions">
+                            <form action="{{ url_for('flag_user', user_id=user.id) }}" method="POST">
+                                <button type="submit">{{ 'Unflag' if user.is_flagged else 'Flag' }}</button>
+                            </form>
+                            <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Manage Campaigns</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Flagged</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for campaign in campaigns %}
+                    <tr class="{{ 'flagged' if campaign.is_flagged }}">
+                        <td>{{ campaign.name }}</td>
+                        <td>{{ 'Yes' if campaign.is_flagged else 'No' }}</td>
+                        <td class="actions">
+                            <form action="{{ url_for('flag_campaign', campaign_id=campaign.id) }}" method="POST">
+                                <button type="submit">{{ 'Unflag' if campaign.is_flagged else 'Flag' }}</button>
+                            </form>
+                            <form action="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" method="POST">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Manage Ad Requests</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Message</th>
+                        <th>Flagged</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ad_request in ad_requests %}
+                    <tr class="{{ 'flagged' if ad_request.is_flagged }}">
+                        <td>{{ ad_request.messages }}</td>
+                        <td>{{ 'Yes' if ad_request.is_flagged else 'No' }}</td>
+                        <td class="actions">
+                            <form action="{{ url_for('flag_ad_request', ad_request_id=ad_request.id) }}" method="POST">
+                                <button type="submit">{{ 'Unflag' if ad_request.is_flagged else 'Flag' }}</button>
+                            </form>
+                            <form action="{{ url_for('delete_ad_request', ad_request_id=ad_request.id) }}" method="POST">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>
